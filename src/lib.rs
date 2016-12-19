@@ -153,6 +153,20 @@ impl<I: Indexed> Range<I> {
             col_end: start.col,
         }
     }
+
+    pub fn start(self) -> Position<I> {
+        Position {
+            row: self.row_start,
+            col: self.col_start,
+        }
+    }
+
+    pub fn end(self) -> Position<I> {
+        Position {
+            row: self.row_end,
+            col: self.col_end,
+        }
+    }
 }
 
 impl<I: Indexed> Clone for Range<I> {
