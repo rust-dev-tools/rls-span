@@ -76,6 +76,50 @@ impl Row<ZeroIndexed> {
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
+pub struct Position<I: Indexed> {
+    pub row: Row<I>,
+    pub col: Column<I>,
+}
+
+impl<I: Indexed> Position<I> {
+    pub fn new(row: Row<I>,
+               col: Column<I>)
+               -> Position<I> {
+        Position {
+            row: row,
+            col: col,
+        }
+    }
+}
+
+impl<I: Indexed> Clone for Position<I> {
+    fn clone(&self) -> Position<I> {
+        *self
+    }
+}
+
+impl<I: Indexed> Copy for Position<I> {}
+
+impl Position<OneIndexed> {
+    pub fn zero_indexed(self) -> Position<ZeroIndexed> {
+        Position {
+            row: self.row.zero_indexed(),
+            col: self.col.zero_indexed(),
+        }
+    }
+}
+
+impl Position<ZeroIndexed> {
+    pub fn one_indexed(self) -> Position<OneIndexed> {
+        Position {
+            row: self.row.one_indexed(),
+            col: self.col.one_indexed(),
+        }
+    }
+}
+
+
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct Range<I: Indexed> {
     pub row_start: Row<I>,
     pub row_end: Row<I>,
@@ -94,6 +138,17 @@ impl<I: Indexed> Range<I> {
             row_end: row_end,
             col_start: col_start,
             col_end: col_end,
+        }
+    }
+
+    pub fn from_positions(start: Position<I>,
+                          end: Position<I>)
+                          -> Range<I> {
+        Range {
+            row_start: start.row,
+            row_end: end.row,
+            col_start: start.col,
+            col_end: start.col,
         }
     }
 }
@@ -155,6 +210,16 @@ impl<I: Indexed> Span<I> {
     pub fn from_range<F: Into<PathBuf>>(range: Range<I>, file: F) -> Span<I> {
         Span {
             range: range,
+            file: file.into(),
+        }
+    }
+
+    pub fn from_positions<F: Into<PathBuf>>(start: Position<I>,
+                                            end: Position<I>,
+                                            file: F)
+                                            -> Span<I> {
+        Span {
+            range: Range::from_positions(start, end),
             file: file.into(),
         }
     }
