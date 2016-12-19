@@ -17,6 +17,8 @@ use serde::{Serialize, Deserialize};
 use std::marker::PhantomData;
 use std::path::PathBuf;
 
+pub mod compiler;
+
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Column<I: Indexed>(pub u32, PhantomData<I>);
 
