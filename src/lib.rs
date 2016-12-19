@@ -6,10 +6,18 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+#![feature(proc_macro)]
+
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
+
+use serde::{Serialize, Deserialize};
+
 use std::marker::PhantomData;
 use std::path::PathBuf;
 
-#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Column<I: Indexed>(pub u32, PhantomData<I>);
 
 impl<I: Indexed> Column<I> {
@@ -38,7 +46,7 @@ impl Column<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Row<I: Indexed>(pub u32, PhantomData<I>);
 
 impl<I: Indexed> Row<I> {
@@ -67,7 +75,7 @@ impl Row<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Range<I: Indexed> {
     pub row_start: Row<I>,
     pub row_end: Row<I>,
@@ -120,7 +128,7 @@ impl Range<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Span<I: Indexed> {
     pub file: PathBuf,
     pub range: Range<I>,
@@ -179,9 +187,11 @@ impl Span<ZeroIndexed> {
     }
 }
 
-pub trait Indexed {}
+pub trait Indexed: Deserialize + Serialize {}
+#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct ZeroIndexed;
 impl Indexed for ZeroIndexed {}
+#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct OneIndexed;
 impl Indexed for OneIndexed {}
 
