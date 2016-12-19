@@ -184,6 +184,63 @@ impl Range<ZeroIndexed> {
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
+pub struct Location<I: Indexed> {
+    pub file: PathBuf,
+    pub position: Position<I>,
+}
+
+impl<I: Indexed> Location<I> {
+    pub fn new<F: Into<PathBuf>>(row: Row<I>,
+                                 col: Column<I>,
+                                 file: F)
+                                 -> Location<I> {
+        Location {
+            position: Position {
+                row: row,
+                col: col,
+            },
+            file: file.into(),
+        }
+    }
+
+    pub fn from_position<F: Into<PathBuf>>(position: Position<I>,
+                                           file: F)
+                                           -> Location<I> {
+        Location {
+            position: position,
+            file: file.into(),
+        }
+    }
+}
+
+impl<I: Indexed> Clone for Location<I> {
+    fn clone(&self) -> Location<I> {
+        Location {
+            position: self.position,
+            file: self.file.clone(),
+        }
+    }
+}
+
+impl Location<OneIndexed> {
+    pub fn zero_indexed(&self) -> Location<ZeroIndexed> {
+        Location {
+            position: self.position.zero_indexed(),
+            file: self.file.clone(),
+        }
+    }
+}
+
+impl Location<ZeroIndexed> {
+    pub fn one_indexed(&self) -> Location<OneIndexed> {
+        Location {
+            position: self.position.one_indexed(),
+            file: self.file.clone(),
+        }
+    }
+}
+
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct Span<I: Indexed> {
     pub file: PathBuf,
     pub range: Range<I>,
