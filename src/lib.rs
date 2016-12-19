@@ -75,7 +75,7 @@ impl Row<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct Range<I: Indexed> {
     pub row_start: Row<I>,
     pub row_end: Row<I>,
@@ -128,7 +128,7 @@ impl Range<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct Span<I: Indexed> {
     pub file: PathBuf,
     pub range: Range<I>,
@@ -188,10 +188,10 @@ impl Span<ZeroIndexed> {
 }
 
 pub trait Indexed: Deserialize + Serialize {}
-#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize)]
+#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct ZeroIndexed;
 impl Indexed for ZeroIndexed {}
-#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize)]
+#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct OneIndexed;
 impl Indexed for OneIndexed {}
 
