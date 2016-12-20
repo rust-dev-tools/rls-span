@@ -19,7 +19,7 @@ use std::path::PathBuf;
 
 pub mod compiler;
 
-#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Column<I: Indexed>(pub u32, PhantomData<I>);
 
 impl<I: Indexed> Column<I> {
@@ -36,6 +36,18 @@ impl<I: Indexed> Clone for Column<I> {
 
 impl<I: Indexed> Copy for Column<I> {}
 
+impl<I: Indexed> serde::Serialize for Column<I> {
+    fn serialize<S: serde::Serializer>(&self, s: &mut S) -> Result<(), <S as serde::Serializer>::Error> {
+        s.serialize_u32(self.0)
+    }
+}
+
+impl<I: Indexed> serde::Deserialize for Column<I> {
+    fn deserialize<D: serde::Deserializer>(d: &mut D) -> std::result::Result<Self, <D as serde::Deserializer>::Error> {
+        <u32 as Deserialize>::deserialize(d).map(|x| Column::new(x))
+    }
+}
+
 impl Column<OneIndexed> {
     pub fn zero_indexed(self) -> Column<ZeroIndexed> {
         Column(self.0 - 1, PhantomData)
@@ -48,7 +60,7 @@ impl Column<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Row<I: Indexed>(pub u32, PhantomData<I>);
 
 impl<I: Indexed> Row<I> {
@@ -64,6 +76,18 @@ impl<I: Indexed> Clone for Row<I> {
 }
 
 impl<I: Indexed> Copy for Row<I> {}
+
+impl<I: Indexed> serde::Serialize for Row<I> {
+    fn serialize<S: serde::Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
+        s.serialize_u32(self.0)
+    }
+}
+
+impl<I: Indexed> serde::Deserialize for Row<I> {
+    fn deserialize<D: serde::Deserializer>(d: &mut D) -> std::result::Result<Self, D::Error> {
+        <u32 as Deserialize>::deserialize(d).map(|x| Row::new(x))
+    }
+}
 
 impl Row<OneIndexed> {
     pub fn zero_indexed(self) -> Row<ZeroIndexed> {
