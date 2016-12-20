@@ -23,7 +23,7 @@ pub mod compiler;
 pub struct Column<I: Indexed>(pub u32, PhantomData<I>);
 
 impl<I: Indexed> Column<I> {
-    pub fn new(c: u32) -> Column<I> {
+    fn new(c: u32) -> Column<I> {
         Column(c, PhantomData)
     }
 }
@@ -49,12 +49,20 @@ impl<I: Indexed> serde::Deserialize for Column<I> {
 }
 
 impl Column<OneIndexed> {
+    pub fn new_one_indexed(c: u32) -> Column<OneIndexed> {
+        Column(c, PhantomData)
+    }
+
     pub fn zero_indexed(self) -> Column<ZeroIndexed> {
         Column(self.0 - 1, PhantomData)
     }
 }
 
 impl Column<ZeroIndexed> {
+    pub fn new_zero_indexed(c: u32) -> Column<ZeroIndexed> {
+        Column(c, PhantomData)
+    }
+
     pub fn one_indexed(self) -> Column<OneIndexed> {
         Column(self.0 + 1, PhantomData)
     }
@@ -64,7 +72,7 @@ impl Column<ZeroIndexed> {
 pub struct Row<I: Indexed>(pub u32, PhantomData<I>);
 
 impl<I: Indexed> Row<I> {
-    pub fn new(c: u32) -> Row<I> {
+    fn new(c: u32) -> Row<I> {
         Row(c, PhantomData)
     }
 }
@@ -90,12 +98,20 @@ impl<I: Indexed> serde::Deserialize for Row<I> {
 }
 
 impl Row<OneIndexed> {
+    pub fn new_one_indexed(c: u32) -> Row<OneIndexed> {
+        Row(c, PhantomData)
+    }
+
     pub fn zero_indexed(self) -> Row<ZeroIndexed> {
         Row(self.0 - 1, PhantomData)
     }
 }
 
 impl Row<ZeroIndexed> {
+    pub fn new_zero_indexed(c: u32) -> Row<ZeroIndexed> {
+        Row(c, PhantomData)
+    }
+
     pub fn one_indexed(self) -> Row<OneIndexed> {
         Row(self.0 + 1, PhantomData)
     }
@@ -143,7 +159,6 @@ impl Position<ZeroIndexed> {
         }
     }
 }
-
 
 #[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct Range<I: Indexed> {
