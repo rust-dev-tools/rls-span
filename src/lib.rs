@@ -174,7 +174,7 @@ impl<I: Indexed> Range<I> {
             row_start: start.row,
             row_end: end.row,
             col_start: start.col,
-            col_end: start.col,
+            col_end: end.col,
         }
     }
 
