@@ -44,8 +44,8 @@ impl DiagnosticSpan {
     pub fn rls_span(&self) -> Span<OneIndexed> {
         Span::new(Row::new(self.line_start as u32),
                   Row::new(self.line_end as u32),
-                  Column::new(self.line_start as u32),
-                  Column::new(self.line_end as u32),
+                  Column::new(self.column_start as u32),
+                  Column::new(self.column_end as u32),
                   PathBuf::from(&self.file_name))
     }
 }
