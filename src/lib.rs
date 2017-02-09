@@ -37,13 +37,13 @@ impl<I: Indexed> Clone for Column<I> {
 impl<I: Indexed> Copy for Column<I> {}
 
 impl<I: Indexed> serde::Serialize for Column<I> {
-    fn serialize<S: serde::Serializer>(&self, s: &mut S) -> Result<(), <S as serde::Serializer>::Error> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> {
         s.serialize_u32(self.0)
     }
 }
 
 impl<I: Indexed> serde::Deserialize for Column<I> {
-    fn deserialize<D: serde::Deserializer>(d: &mut D) -> std::result::Result<Self, <D as serde::Deserializer>::Error> {
+    fn deserialize<D: serde::Deserializer>(d: D) -> std::result::Result<Self, <D as serde::Deserializer>::Error> {
         <u32 as Deserialize>::deserialize(d).map(|x| Column::new(x))
     }
 }
@@ -86,13 +86,13 @@ impl<I: Indexed> Clone for Row<I> {
 impl<I: Indexed> Copy for Row<I> {}
 
 impl<I: Indexed> serde::Serialize for Row<I> {
-    fn serialize<S: serde::Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         s.serialize_u32(self.0)
     }
 }
 
 impl<I: Indexed> serde::Deserialize for Row<I> {
-    fn deserialize<D: serde::Deserializer>(d: &mut D) -> std::result::Result<Self, D::Error> {
+    fn deserialize<D: serde::Deserializer>(d: D) -> std::result::Result<Self, D::Error> {
         <u32 as Deserialize>::deserialize(d).map(|x| Row::new(x))
     }
 }
