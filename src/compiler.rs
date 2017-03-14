@@ -13,7 +13,8 @@ use std::path::PathBuf;
 
 use {Span, Row, Column, OneIndexed};
 
-#[derive(Debug, Clone, Deserialize)]
+#[cfg_attr(feature = "serialize-serde", derive(Deserialize))]
+#[derive(Debug, Clone)]
 pub struct DiagnosticSpan {
     pub file_name: String,
     pub byte_start: u32,
@@ -50,7 +51,8 @@ impl DiagnosticSpan {
     }
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[cfg_attr(feature = "serialize-serde", derive(Deserialize))]
+#[derive(Debug, Clone)]
 pub struct DiagnosticSpanLine {
     pub text: String,
 
@@ -60,7 +62,8 @@ pub struct DiagnosticSpanLine {
     pub highlight_end: usize,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[cfg_attr(feature = "serialize-serde", derive(Deserialize))]
+#[derive(Debug, Clone)]
 pub struct DiagnosticSpanMacroExpansion {
     /// span where macro was applied to generate this code; note that
     /// this may itself derive from a macro (if

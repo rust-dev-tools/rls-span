@@ -3,7 +3,12 @@ name = "rls-span"
 version = "0.1.0"
 authors = ["Nick Cameron <ncameron@mozilla.com>"]
 
+[features]
+default = []
+serialize-serde = ["serde", "serde_derive"]
+serialize-rustc = ["rustc-serialize"]
+
 [dependencies]
-rustc-serialize = "0.3"
-serde = "0.9"
-serde_derive = "0.9"
+rustc-serialize = { version = "0.3", optional = true }
+serde = { version = "0.9", optional = true }
+serde_derive = { version = "0.9", optional = true }
