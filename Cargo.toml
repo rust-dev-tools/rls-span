@@ -4,5 +4,6 @@ version = "0.1.0"
 authors = ["Nick Cameron <ncameron@mozilla.com>"]
 
 [dependencies]
+rustc-serialize = "0.3"
 serde = "0.9"
 serde_derive = "0.9"

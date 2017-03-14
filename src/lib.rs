@@ -11,7 +11,9 @@
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate rustc_serialize;
 
+use rustc_serialize::{Encodable, Decodable};
 use serde::{Serialize, Deserialize};
 
 use std::marker::PhantomData;
@@ -36,15 +38,27 @@ impl<I: Indexed> Clone for Column<I> {
 
 impl<I: Indexed> Copy for Column<I> {}
 
-impl<I: Indexed> serde::Serialize for Column<I> {
+impl<I: Indexed> Serialize for Column<I> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error> {
         s.serialize_u32(self.0)
     }
 }
 
-impl<I: Indexed> serde::Deserialize for Column<I> {
+impl<I: Indexed> Deserialize for Column<I> {
     fn deserialize<D: serde::Deserializer>(d: D) -> std::result::Result<Self, <D as serde::Deserializer>::Error> {
         <u32 as Deserialize>::deserialize(d).map(|x| Column::new(x))
+    }
+}
+
+impl<I: Indexed> Decodable for Column<I> {
+    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Column<I>, D::Error> {
+        d.read_u32().map(|x| Column::new(x))
+    }
+}
+
+impl<I: Indexed> Encodable for Column<I> {
+    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+        s.emit_u32(self.0)
     }
 }
 
@@ -97,6 +111,18 @@ impl<I: Indexed> serde::Deserialize for Row<I> {
     }
 }
 
+impl<I: Indexed> Decodable for Row<I> {
+    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Row<I>, D::Error> {
+        d.read_u32().map(|x| Row::new(x))
+    }
+}
+
+impl<I: Indexed> Encodable for Row<I> {
+    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+        s.emit_u32(self.0)
+    }
+}
+
 impl Row<OneIndexed> {
     pub fn new_one_indexed(c: u32) -> Row<OneIndexed> {
         Row(c, PhantomData)
@@ -117,7 +143,7 @@ impl Row<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, RustcDecodable, RustcEncodable)]
 pub struct Position<I: Indexed> {
     pub row: Row<I>,
     pub col: Column<I>,
@@ -160,7 +186,7 @@ impl Position<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, RustcDecodable, RustcEncodable)]
 pub struct Range<I: Indexed> {
     pub row_start: Row<I>,
     pub row_end: Row<I>,
@@ -238,7 +264,7 @@ impl Range<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, RustcDecodable, RustcEncodable)]
 pub struct Location<I: Indexed> {
     pub file: PathBuf,
     pub position: Position<I>,
@@ -295,7 +321,7 @@ impl Location<ZeroIndexed> {
     }
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
+#[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, RustcDecodable, RustcEncodable)]
 pub struct Span<I: Indexed> {
     pub file: PathBuf,
     pub range: Range<I>,
@@ -365,10 +391,10 @@ impl Span<ZeroIndexed> {
 }
 
 pub trait Indexed: Deserialize + Serialize {}
-#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize, PartialOrd, Ord, RustcDecodable, RustcEncodable)]
 pub struct ZeroIndexed;
 impl Indexed for ZeroIndexed {}
-#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize, PartialOrd, Ord)]
+#[derive(Hash, PartialEq, Eq, Debug, Deserialize, Serialize, PartialOrd, Ord, RustcDecodable, RustcEncodable)]
 pub struct OneIndexed;
 impl Indexed for OneIndexed {}
 
