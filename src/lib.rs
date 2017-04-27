@@ -31,7 +31,6 @@ pub mod compiler;
 
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Column<I: Indexed>(pub u32, PhantomData<I>);
-
 impl<I: Indexed> Column<I> {
     fn new(c: u32) -> Column<I> {
         Column(c, PhantomData)
@@ -212,6 +211,7 @@ pub struct Range<I: Indexed> {
     pub row_end: Row<I>,
     pub col_start: Column<I>,
     pub col_end: Column<I>,
+    pub length: Option<u64>,
 }
 
 impl<I: Indexed> Range<I> {
@@ -225,6 +225,22 @@ impl<I: Indexed> Range<I> {
             row_end: row_end,
             col_start: col_start,
             col_end: col_end,
+            length: None
+        }
+    }
+
+    pub fn new_with_len(row_start: Row<I>,
+                        row_end: Row<I>,
+                        col_start: Column<I>,
+                        col_end: Column<I>,
+                        len: u64)
+                        -> Range<I> {
+        Range {
+            row_start: row_start,
+            row_end: row_end,
+            col_start: col_start,
+            col_end: col_end,
+            length: Some(len)
         }
     }
 
@@ -236,6 +252,20 @@ impl<I: Indexed> Range<I> {
             row_end: end.row,
             col_start: start.col,
             col_end: end.col,
+            length: None,
+        }
+    }
+
+    pub fn from_positions_with_len(start: Position<I>,
+                                   end: Position<I>,
+                                   length: u64)
+                                   -> Range<I> {
+        Range {
+            row_start: start.row,
+            row_end: end.row,
+            col_start: start.col,
+            col_end: end.col,
+            length: Some(length),
         }
     }
 
@@ -269,6 +299,7 @@ impl Range<OneIndexed> {
             row_end: self.row_end.zero_indexed(),
             col_start: self.col_start.zero_indexed(),
             col_end: self.col_end.zero_indexed(),
+            length: None
         }
     }
 }
@@ -280,6 +311,7 @@ impl Range<ZeroIndexed> {
             row_end: self.row_end.one_indexed(),
             col_start: self.col_start.one_indexed(),
             col_end: self.col_end.one_indexed(),
+            length: None,
         }
     }
 }
@@ -364,6 +396,7 @@ impl<I: Indexed> Span<I> {
                 row_end: row_end,
                 col_start: col_start,
                 col_end: col_end,
+                length: None,
             },
             file: file.into(),
         }
