@@ -212,7 +212,6 @@ pub struct Range<I: Indexed> {
     pub row_end: Row<I>,
     pub col_start: Column<I>,
     pub col_end: Column<I>,
-    pub len: Option<u64>,
 }
 
 impl<I: Indexed> Range<I> {
@@ -226,22 +225,6 @@ impl<I: Indexed> Range<I> {
             row_end: row_end,
             col_start: col_start,
             col_end: col_end,
-            len: None
-        }
-    }
-
-    pub fn new_with_len(row_start: Row<I>,
-                        row_end: Row<I>,
-                        col_start: Column<I>,
-                        col_end: Column<I>,
-                        len: u64)
-                        -> Range<I> {
-        Range {
-            row_start: row_start,
-            row_end: row_end,
-            col_start: col_start,
-            col_end: col_end,
-            len: Some(len)
         }
     }
 
@@ -253,20 +236,6 @@ impl<I: Indexed> Range<I> {
             row_end: end.row,
             col_start: start.col,
             col_end: end.col,
-            len: None,
-        }
-    }
-
-    pub fn from_positions_with_len(start: Position<I>,
-                                   end: Position<I>,
-                                   len: u64)
-                                   -> Range<I> {
-        Range {
-            row_start: start.row,
-            row_end: end.row,
-            col_start: start.col,
-            col_end: end.col,
-            len: Some(len),
         }
     }
 
@@ -300,7 +269,6 @@ impl Range<OneIndexed> {
             row_end: self.row_end.zero_indexed(),
             col_start: self.col_start.zero_indexed(),
             col_end: self.col_end.zero_indexed(),
-            len: None
         }
     }
 }
@@ -312,7 +280,6 @@ impl Range<ZeroIndexed> {
             row_end: self.row_end.one_indexed(),
             col_start: self.col_start.one_indexed(),
             col_end: self.col_end.one_indexed(),
-            len: None,
         }
     }
 }
@@ -397,7 +364,6 @@ impl<I: Indexed> Span<I> {
                 row_end: row_end,
                 col_start: col_start,
                 col_end: col_end,
-                len: None,
             },
             file: file.into(),
         }
