@@ -54,8 +54,8 @@ impl<I: Indexed> Serialize for Column<I> {
 }
 
 #[cfg(feature = "serialize-serde")]
-impl<I: Indexed> Deserialize for Column<I> {
-    fn deserialize<D: serde::Deserializer>(d: D) -> std::result::Result<Self, <D as serde::Deserializer>::Error> {
+impl<'dt, I: Indexed> Deserialize<'dt> for Column<I> {
+    fn deserialize<D: serde::Deserializer<'dt>>(d: D) -> std::result::Result<Self, <D as serde::Deserializer<'dt>>::Error> {
         <u32 as Deserialize>::deserialize(d).map(|x| Column::new(x))
     }
 }
@@ -119,8 +119,8 @@ impl<I: Indexed> serde::Serialize for Row<I> {
 }
 
 #[cfg(feature = "serialize-serde")]
-impl<I: Indexed> serde::Deserialize for Row<I> {
-    fn deserialize<D: serde::Deserializer>(d: D) -> std::result::Result<Self, D::Error> {
+impl<'dt, I: Indexed> serde::Deserialize<'dt> for Row<I> {
+    fn deserialize<D: serde::Deserializer<'dt>>(d: D) -> std::result::Result<Self, D::Error> {
         <u32 as Deserialize>::deserialize(d).map(|x| Row::new(x))
     }
 }
@@ -415,7 +415,7 @@ impl Span<ZeroIndexed> {
 }
 
 #[cfg(feature = "serialize-serde")]
-pub trait Indexed: Deserialize + Serialize {}
+pub trait Indexed: {}
 #[cfg(not(feature = "serialize-serde"))]
 pub trait Indexed: {}
 #[cfg_attr(feature = "serialize-rustc", derive(RustcDecodable, RustcEncodable))]
