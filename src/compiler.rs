@@ -7,7 +7,8 @@
 // except according to those terms.
 
 /// These are the structures emitted by the compiler as part of JSON errors.
-/// The original source can be found at https://github.com/rust-lang/rust/blob/master/src/libsyntax/json.rs
+/// The original source can be found at
+/// https://github.com/rust-lang/rust/blob/master/src/libsyntax/json.rs
 
 use std::path::PathBuf;
 
@@ -43,11 +44,13 @@ pub struct DiagnosticSpan {
 
 impl DiagnosticSpan {
     pub fn rls_span(&self) -> Span<OneIndexed> {
-        Span::new(Row::new(self.line_start as u32),
-                  Row::new(self.line_end as u32),
-                  Column::new(self.column_start as u32),
-                  Column::new(self.column_end as u32),
-                  PathBuf::from(&self.file_name))
+        Span::new(
+            Row::new(self.line_start as u32),
+            Row::new(self.line_end as u32),
+            Column::new(self.column_start as u32),
+            Column::new(self.column_end as u32),
+            PathBuf::from(&self.file_name),
+        )
     }
 }
 
