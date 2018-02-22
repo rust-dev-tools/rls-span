@@ -9,8 +9,6 @@
 #![cfg_attr(rustbuild, feature(staged_api, rustc_private))]
 #![cfg_attr(rustbuild, unstable(feature = "rustc_private", issue = "27812"))]
 
-#![feature(proc_macro)]
-
 #[cfg(feature = "serialize-serde")]
 extern crate serde;
 #[cfg(feature = "serialize-serde")]
