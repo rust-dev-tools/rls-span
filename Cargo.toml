@@ -4,7 +4,7 @@ version = "0.4.0"
 authors = ["Nick Cameron <ncameron@mozilla.com>"]
 description = "Types for identifying code spans/ranges"
 license = "Apache-2.0/MIT"
-repository = "https://github.com/nrc/rls-span"
+repository = "https://github.com/rust-dev-tools/rls-span"
 categories = ["development-tools"]
 
 [features]
